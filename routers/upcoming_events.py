@@ -8,6 +8,7 @@ import models
 import schemas
 from database import get_db
 from auth import get_current_active_user, get_current_admin_user
+import cloudinary.uploader
 
 router = APIRouter()
 
@@ -61,24 +62,35 @@ async def create_upcoming_event(
     db.refresh(db_event)
     
     # Handle image upload if provided
-    if image:
-        # Create directory if it doesn't exist
-        static_dir = os.path.join("static", "upcomingEvents")
-        ensure_dir(static_dir)
+    # if image:
+    #     # Create directory if it doesn't exist
+    #     static_dir = os.path.join("static", "upcomingEvents")
+    #     ensure_dir(static_dir)
         
-        # Get file extension and create filename
-        file_extension = os.path.splitext(image.filename)[1]
-        filename = f"upcoming_{db_event.id}{file_extension}"
-        file_path = os.path.join(static_dir, filename)
+    #     # Get file extension and create filename
+    #     file_extension = os.path.splitext(image.filename)[1]
+    #     filename = f"upcoming_{db_event.id}{file_extension}"
+    #     file_path = os.path.join(static_dir, filename)
         
-        # Save file
-        await save_upload_file(image, file_path)
+    #     # Save file
+    #     await save_upload_file(image, file_path)
         
-        # Update image_url in database
-        db_event.image_url = f"/static/upcomingEvents/{filename}"
+    #     # Update image_url in database
+    #     db_event.image_url = f"/static/upcomingEvents/{filename}"
+    #     db.commit()
+    #     db.refresh(db_event)
+
+    #adding the cloudinary image adding logic
+
+    
+    if image and image.filename:
+        upload_result = cloudinary.uploader.upload(image.file, folder="ngo_upcomingevents")
+        photo_path = upload_result.get("secure_url")
+    
+    if photo_path: 
+        db_event.image_url = photo_path
         db.commit()
         db.refresh(db_event)
-    
     return db_event
 
 @router.put("/{event_id}", response_model=schemas.UpcomingEvent)
