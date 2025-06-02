@@ -9,6 +9,7 @@ from database import get_db
 import models
 import schemas
 from auth import get_current_active_user, get_current_admin_user
+import cloudinary.uploader
 
 router = APIRouter(
     prefix="/members",
@@ -103,22 +104,29 @@ async def create_member_with_image(
     """Create a new team member with image upload"""
     
     # Handle image upload if provided
+    # photo_path = None
+    # if image and image.filename:
+    #     # Generate unique filename
+    #     file_ext = os.path.splitext(image.filename)[1]
+    #     unique_filename = f"{uuid.uuid4()}{file_ext}"
+        
+    #     # Save file path relative to static directory
+    #     relative_path = f"userimages/{unique_filename}"
+    #     photo_path = relative_path
+        
+    #     # Full path to save the file
+    #     file_path = os.path.join(MEMBER_IMAGES_DIR, unique_filename)
+        
+    #     # Save uploaded file
+    #     with open(file_path, "wb") as buffer:
+    #         shutil.copyfileobj(image.file, buffer)
+
+    #ADDING THE CLOUDINARY UPLOAD LOGIC
+    
     photo_path = None
     if image and image.filename:
-        # Generate unique filename
-        file_ext = os.path.splitext(image.filename)[1]
-        unique_filename = f"{uuid.uuid4()}{file_ext}"
-        
-        # Save file path relative to static directory
-        relative_path = f"userimages/{unique_filename}"
-        photo_path = relative_path
-        
-        # Full path to save the file
-        file_path = os.path.join(MEMBER_IMAGES_DIR, unique_filename)
-        
-        # Save uploaded file
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
+        upload_result = cloudinary.uploader.upload(image.file, folder="ngo_members")
+        photo_path = upload_result.get("secure_url")
     
     # Create member in database
     db_member = models.Member(
