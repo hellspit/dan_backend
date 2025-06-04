@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
 from sqlalchemy.orm import Session
 from typing import List
@@ -121,29 +122,55 @@ async def update_upcoming_event(
     if location is not None:
         db_event.location = location
     
-    # Handle image upload if provided
-    if image:
-        # Remove old image if exists
-        if db_event.image_url and os.path.exists(db_event.image_url.replace("/static/", "static/")):
+    # # Handle image upload if provided
+    # if image:
+    #     # Remove old image if exists
+    #     if db_event.image_url and os.path.exists(db_event.image_url.replace("/static/", "static/")):
+    #         try:
+    #             os.remove(db_event.image_url.replace("/static/", "static/"))
+    #         except OSError:
+    #             pass
+        
+    #     # Create directory if it doesn't exist
+    #     static_dir = os.path.join("static", "upcomingEvents")
+    #     ensure_dir(static_dir)
+        
+    #     # Get file extension and create filename
+    #     file_extension = os.path.splitext(image.filename)[1]
+    #     filename = f"upcoming_{event_id}{file_extension}"
+    #     file_path = os.path.join(static_dir, filename)
+        
+    #     # Save file
+    #     await save_upload_file(image, file_path)
+        
+    #     # Update image_url in database
+    #     db_event.image_url = f"/static/upcomingEvents/{filename}"
+
+    if image and image.filename:
+        if db_event.image_url:
             try:
-                os.remove(db_event.image_url.replace("/static/", "static/"))
-            except OSError:
-                pass
+                parsed_url = urlparse(db_event.image_url)
+                filename = os.path.splittext(os.path.basename(parsed_url.path))[0]
+                public_id = f"ngo_upcomingevents/{filename}"
+
+                #delete the existing file from cloudinary
+
+                cloudinary.uploader.destroy(public_id, resource_type = "image")
+            except Exception as e:
+                print(f"warning: failed to delete old Cloudinary image: {e}")
+
+
+        #uploading the new image
+
+        upload_result = cloudinary.uploader.upload(
+            image.file,
+            folder = "ngo_upcomingevents",
+            resource_type = "image"
+            )
         
-        # Create directory if it doesn't exist
-        static_dir = os.path.join("static", "upcomingEvents")
-        ensure_dir(static_dir)
-        
-        # Get file extension and create filename
-        file_extension = os.path.splitext(image.filename)[1]
-        filename = f"upcoming_{event_id}{file_extension}"
-        file_path = os.path.join(static_dir, filename)
-        
-        # Save file
-        await save_upload_file(image, file_path)
-        
-        # Update image_url in database
-        db_event.image_url = f"/static/upcomingEvents/{filename}"
+        db_event.image_url = upload_result.get("secure_url")
+    
+
     
     db.commit()
     db.refresh(db_event)
