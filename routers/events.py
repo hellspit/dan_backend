@@ -146,18 +146,18 @@ async def update_event(
     
     #adding the update logic for cloudinary
 
-     if image and image.filename:
-        if db_event.image_url:
-            try:
-                parsed_url = urlparse(db_event.image_url)
-                filename = os.path.splittext(os.path.basename(parsed_url.path))[0]
-                public_id = f"ngo_upcomingevents/{filename}"
+        if image and image.filename:
+            if db_event.image_url:
+                try:
+                    parsed_url = urlparse(db_event.image_url)
+                    filename = os.path.splittext(os.path.basename(parsed_url.path))[0]
+                    public_id = f"ngo_upcomingevents/{filename}"
 
                 #delete the existing file from cloudinary
 
-                cloudinary.uploader.destroy(public_id, resource_type = "image")
-            except Exception as e:
-                print(f"warning: failed to delete old Cloudinary image: {e}")
+                    cloudinary.uploader.destroy(public_id, resource_type = "image")
+                except Exception as e:
+                    print(f"warning: failed to delete old Cloudinary image: {e}")
 
 
         #uploading the new image
