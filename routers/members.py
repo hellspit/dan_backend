@@ -136,7 +136,9 @@ async def create_member_with_image(
         position=position,
         age=age,
         bio=bio,
-        photo=photo_path  # Store the relative path
+        photo=photo_path, # Store the relative path
+        linkedin_link = linkedin_link,
+        twitter_link= twitter_link  
     )
     
     db.add(db_member)
