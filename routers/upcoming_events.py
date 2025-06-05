@@ -85,7 +85,7 @@ async def create_upcoming_event(
 
     #adding the cloudinary image adding logic
 
-    
+    photo_path = None
     if image and image.filename:
         upload_result = cloudinary.uploader.upload(image.file, folder="ngo_upcomingevents")
         photo_path = upload_result.get("secure_url")
