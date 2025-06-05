@@ -35,6 +35,8 @@ class MemberBase(BaseModel):
     age: int
     photo: Optional[str] = None
     bio: Optional[str] = None
+    linkedin_link: Optional[str] = None
+    twitter_link: Optional[str]= None
 
 class MemberCreate(MemberBase):
     pass

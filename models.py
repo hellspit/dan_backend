@@ -24,6 +24,8 @@ class Member(Base):
     age = Column(Integer)
     photo = Column(String, nullable=True)
     bio = Column(Text, nullable=True)
+    twitter_link = Column(String, nullable = True)
+    linkedin_link = Column(String, nullable = True)
 
 class Event(Base):
     __tablename__ = "events"

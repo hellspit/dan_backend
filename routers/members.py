@@ -90,7 +90,7 @@ def delete_member(
     db.commit()
     return None
 
-# Add this new endpoint for member creation with image upload
+
 @router.post("/with-image", response_model=schemas.Member)
 async def create_member_with_image(
     name: str = Form(...),
@@ -98,6 +98,8 @@ async def create_member_with_image(
     age: int = Form(...),
     bio: str = Form(None),
     image: UploadFile = File(None),
+    twitter_link: str =Form(None),
+    linkedin_link: str = Form(None),
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_admin_user)
 ):
