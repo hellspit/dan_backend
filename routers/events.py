@@ -46,6 +46,7 @@ async def create_event(
     description: str,
     date: date,
     location: str = None,
+    youtube_link: str = None,
     image: UploadFile = File(None),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_active_user)
@@ -56,6 +57,7 @@ async def create_event(
         description=description,
         date=date,
         location=location,
+        youtube_link = youtube_link,
         organizer_id=current_user.id
     )
     db.add(db_event)

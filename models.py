@@ -33,9 +33,11 @@ class Event(Base):
     description = Column(String)
     date = Column(Date)
     location = Column(String)
+    youtube_links = Column(String, nullable= True)
     image_url = Column(String, nullable=True)
     organizer_id = Column(Integer, ForeignKey("users.id"))
     is_active = Column(Boolean, default=True)
+
 
     organizer = relationship("User", back_populates="events")
 

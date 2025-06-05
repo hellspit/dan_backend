@@ -58,6 +58,7 @@ class EventBase(BaseModel):
     description: str
     date: date
     location: Optional[str] = None
+    youtube_link: Optional[str] = None
     image_url: Optional[str] = None
 
 class EventCreate(EventBase):
