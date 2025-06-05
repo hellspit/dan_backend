@@ -111,6 +111,7 @@ class UpcomingEventBase(BaseModel):
     date: date
     location: Optional[str] = None
     image_url: Optional[str] = None
+    youtube_link: Optional[str] = None
 
 class UpcomingEventCreate(UpcomingEventBase):
     pass

@@ -64,6 +64,7 @@ class UpcomingEvent(Base):
     description = Column(String)
     date = Column(Date)
     location = Column(String)
+    youtube_link = Column(String, nullable = True)
     image_url = Column(String, nullable=True)
     organizer_id = Column(Integer, ForeignKey("users.id"))
     is_active = Column(Boolean, default=True)

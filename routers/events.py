@@ -103,6 +103,7 @@ async def update_event(
     description: str = None,
     date: date = None,
     location: str = None,
+    youtube_link:str = None,
     image: UploadFile = File(None),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_active_user)
@@ -123,6 +124,8 @@ async def update_event(
         db_event.date = date
     if location is not None:
         db_event.location = location
+    if youtube_link is not None:
+        db_event.youtube_link = youtube_link
     
     # Handle image upload if provided
     # if image:
